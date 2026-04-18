@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lakshya — Grievance Resolution Verifier System. File complaints, upload evidence, and verify resolutions.">
+    <title>Lakshya — Grievance Resolution Verifier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ==================== HEADER ==================== -->
+    <header class="app-header" id="app-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <h1 class="logo-text">Lakshya <span class="logo-sub">Verify</span></h1>
+            </div>
+            <nav class="main-nav" id="main-nav">
+                <button class="nav-btn active" data-tab="citizen" id="nav-citizen">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Citizen
+                </button>
+                <button class="nav-btn" data-tab="officer" id="nav-officer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Field Officer
+                </button>
+                <button class="nav-btn" data-tab="department" id="nav-department">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Department
+                </button>
+            </nav>
+            <a href="/static/dashboard/dist/index.html" class="dashboard-link" id="dashboard-link" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="app-main">
+
+        <!-- ========== CITIZEN TAB ========== -->
+        <section class="tab-panel active" id="tab-citizen">
+            <div class="section-header">
+                <h2>File a Complaint</h2>
+                <p>Submit your grievance to the District Collector's office</p>
+            </div>
+
+            <form class="glass-card form-card" id="complaint-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="citizen-name">Your Name</label>
+                        <input type="text" id="citizen-name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="citizen-phone">Phone Number</label>
+                        <input type="tel" id="citizen-phone" placeholder="+91XXXXXXXXXX" required pattern="\+?[0-9]{10,15}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="citizen-department">Department</label>
+                        <select id="citizen-department" required>
+                            <option value="">Select department...</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="citizen-description">Describe Your Complaint</label>
+                        <textarea id="citizen-description" rows="4" placeholder="Describe the issue in detail..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>GPS Location</label>
+                        <div class="gps-display">
+                            <button type="button" class="btn btn-outline" id="btn-get-gps" onclick="getGPSLocation()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+                                Get My Location
+                            </button>
+                            <span id="gps-status" class="gps-status">Not captured</span>
+                        </div>
+                        <input type="hidden" id="citizen-lat">
+                        <input type="hidden" id="citizen-long">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-complaint">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Submit Complaint
+                </button>
+            </form>
+
+            <!-- Grievances List -->
+            <div class="section-header" style="margin-top: 2.5rem;">
+                <h2>My Complaints</h2>
+                <p>Track the status of your submitted grievances</p>
+            </div>
+            <div class="filter-bar glass-card">
+                <select id="filter-status" onchange="loadGrievances()">
+                    <option value="">All Statuses</option>
+                    <option value="Pending Verification">Pending Verification</option>
+                    <option value="Verifying">Verifying</option>
+                    <option value="Verified Closed">Verified Closed</option>
+                    <option value="Reopened">Reopened</option>
+                </select>
+                <select id="filter-department" onchange="loadGrievances()">
+                    <option value="">All Departments</option>
+                </select>
+                <button class="btn btn-outline" onclick="loadGrievances()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                    Refresh
+                </button>
+            </div>
+            <div id="grievances-list" class="grievances-grid"></div>
+        </section>
+
+        <!-- ========== OFFICER TAB ========== -->
+        <section class="tab-panel" id="tab-officer">
+            <div class="section-header">
+                <h2>Upload Field Evidence</h2>
+                <p>Submit photo proof and GPS location for grievance verification</p>
+            </div>
+
+            <form class="glass-card form-card" id="evidence-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="evidence-grievance-id">Grievance ID</label>
+                        <input type="number" id="evidence-grievance-id" placeholder="e.g. 9" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Officer GPS Location</label>
+                        <div class="gps-display">
+                            <button type="button" class="btn btn-outline" id="btn-officer-gps" onclick="getOfficerGPS()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                                Capture GPS
+                            </button>
+                            <span id="officer-gps-status" class="gps-status">Not captured</span>
+                        </div>
+                        <input type="hidden" id="officer-lat">
+                        <input type="hidden" id="officer-long">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="evidence-photo">Photo Evidence</label>
+                        <div class="file-upload-area" id="file-upload-area">
+                            <input type="file" id="evidence-photo" accept="image/*" capture="environment">
+                            <div class="upload-placeholder" id="upload-placeholder">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                <p>Click to upload or drag photo here</p>
+                                <span>JPG, PNG up to 10MB</span>
+                            </div>
+                            <img id="photo-preview" class="photo-preview" style="display:none" alt="Evidence preview">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-evidence">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload Evidence
+                </button>
+            </form>
+
+            <!-- Verifying Grievances List -->
+            <div class="section-header" style="margin-top: 2.5rem;">
+                <h2>Grievances Pending Evidence</h2>
+                <p>Grievances currently in verification that need field evidence</p>
+            </div>
+            <div id="officer-grievances-list" class="grievances-grid"></div>
+        </section>
+
+        <!-- ========== DEPARTMENT TAB ========== -->
+        <section class="tab-panel" id="tab-department">
+            <div class="section-header">
+                <h2>Department — Resolve Grievances</h2>
+                <p>Mark resolved complaints to trigger independent verification</p>
+            </div>
+
+            <div class="section-header" style="margin-top: 1rem;">
+                <h3>Pending & Reopened Grievances</h3>
+            </div>
+            <div id="dept-grievances-list" class="grievances-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- ==================== TOAST ==================== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ==================== MODAL ==================== -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal glass-card" id="modal">
+            <button class="modal-close" id="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
